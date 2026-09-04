@@ -13,7 +13,7 @@ do short videos keep the audience better than long ones?
 ```{r}
 library(tidyverse)
 
-videos <- read.csv("/Users/sunabayhan/Desktop/Data Prep_31.08/video_view.csv")
+videos <- read_csv("../Data/raw/video_view.csv")
 
 glimpse(videos)
 ```
