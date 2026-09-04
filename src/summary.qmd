@@ -14,7 +14,7 @@ do short videos keep the audience better than long ones?
 library(tidyverse)
 
 # download the data if it is not in the repo yet
-data_file <- "/Users/sunabayhan/Team_2_TikTok-project-2026-2027-1/Data/raw/video_view.csv"
+data_file <- "../Data/raw/video_view.csv"
 
 if (!file.exists(data_file)) {
   data_url <- paste0(
