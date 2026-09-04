@@ -3,43 +3,74 @@ title: "TikTok Video View Summary"
 format: html
 ---
 
+# Goal
+
+We summarize `video_view.csv` and check one question:
+do short videos keep the audience better than long ones?
+
+# Load and inspect
+
 ```{r}
-views <- read.csv("C:\Users\JeroenSwolfs\Documents\TikTok-project-template-2026\data\video_view.csv")
-library(dplyr)
 library(tidyverse)
 
-x <- nrow(views)
-print(x)
+videos <- read.csv("/Users/sunabayhan/Desktop/Data Prep_31.08/video_view.csv")
 
-str(views)
-head(views)
-summary(views)
-colSums(is.na(views))
+glimpse(videos)
+```
 
-overview <- views %>%
-  summarize(
-    videos = n(),
-    creators = n_distinct(creator_id),
-    avg_length = mean(video_length_sec),
-    avg_impressions = mean(impressions_n),
-    avg_watched = mean(watched_n),
-    avg_watch_rate = 
-    avg_watch_share = 
-    avg_watch_seconds = 
+# Overall numbers
+
+```{r}
+# one row with the totals and averages of the whole dataset
+overview <- videos %>%
+  summarise(
+    n_videos       = n(),
+    n_creators     = n_distinct(creator_id),
+    avg_length     = mean(video_length_sec, na.rm = TRUE),
+    avg_watch_rate = mean(watch_rate, na.rm = TRUE)
   )
 
-print(overview)
-
-mean(views$watch_rate)
-mean(views$avg_watch_share)
-
-views$watched_pct <- views$watched_n / views$impressions_n * 100
-
-topvideo <- views[views$impressions_n == max(views$impressions_n), ]
-print(topvideo)
-
-hist(views$video_length_sec)
-
-goodvideos <- subset(views, watch_rate > 0.8)
-nrow(goodvideos)
+overview
 ```
+
+# Top creators
+
+```{r}
+# group per creator, then sort by total impressions
+creator_summary <- videos %>%
+  group_by(creator_id) %>%
+  summarise(
+    videos_n          = n(),
+    impressions_total = sum(impressions_n, na.rm = TRUE),
+    watch_rate_avg    = mean(watch_rate, na.rm = TRUE)
+  ) %>%
+  arrange(desc(impressions_total))
+
+head(creator_summary, 5)
+```
+
+# Short videos vs long videos
+
+```{r}
+# make a group variable, then compare the two groups
+length_groups <- videos %>%
+  mutate(length_group = ifelse(video_length_sec < 30, "short", "long")) %>%
+  group_by(length_group) %>%
+  summarise(
+    videos_n       = n(),
+    watch_rate_avg = mean(watch_rate, na.rm = TRUE),
+    watch_share_avg = mean(avg_watch_share, na.rm = TRUE)
+  )
+
+length_groups
+```
+
+```{r}
+hist(videos$video_length_sec)
+```
+
+# Conclusion
+
+- Most videos in the dataset are short.
+- Short videos have a higher average watch share: people finish them more often.
+- Long videos still get watched, but viewers drop out before the end.
