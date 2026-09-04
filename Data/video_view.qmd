@@ -1,0 +1,47 @@
+---
+title: "Untitled"
+format: html
+---
+
+
+
+
+
+
+
+```{r}
+# URL of the dataset
+data_url <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/video_view.csv"
+
+# Define the folder and file path
+data_dir <- file.path("data", "raw")
+data_file <- file.path(data_dir, "video_view.csv")
+
+# Create data/raw if it does not exist
+if (!dir.exists(data_dir)) {
+  dir.create(data_dir, recursive = TRUE)
+}
+
+# Download only if the file does not already exist
+if (!file.exists(data_file)) {
+  download.file(
+    url = data_url,
+    destfile = data_file,
+    mode = "wb"
+  )
+  
+  message("Data downloaded to: ", data_file)
+} else {
+  message("File already exists. Download skipped.")
+}
+```
+
+```{r}
+getwd()
+list.files("data/raw")
+file.exists("data/raw/video_view.csv")
+video_view <- read.csv("data/raw/video_view.csv")
+
+View(video_view)
+```
+```
