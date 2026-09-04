@@ -13,7 +13,22 @@ do short videos keep the audience better than long ones?
 ```{r}
 library(tidyverse)
 
+<<<<<<< HEAD
 videos <- read_csv("../Data/raw/video_view.csv")
+=======
+# download the data if it is not in the repo yet
+data_file <- "/Users/sunabayhan/Team_2_TikTok-project-2026-2027-1/Data/raw/video_view.csv"
+
+if (!file.exists(data_file)) {
+  data_url <- paste0(
+    "https://raw.githubusercontent.com/hannesdatta/course-dprep/",
+    "refs/heads/main/material/project/video_view.csv"
+  )
+  download.file(data_url, data_file)
+}
+
+videos <- read_csv(data_file)
+>>>>>>> e5d6ab52e443da466e8a3bb8b65e6b65ec8f929d
 
 glimpse(videos)
 ```
