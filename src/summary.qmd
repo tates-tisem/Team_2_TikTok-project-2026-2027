@@ -65,10 +65,6 @@ length_groups <- videos %>%
 length_groups
 ```
 
-```{r}
-hist(videos$video_length_sec)
-```
-
 # Conclusion
 
 - Most videos in the dataset are short.
