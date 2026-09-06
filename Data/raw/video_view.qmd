@@ -31,11 +31,11 @@ if (!file.exists(data_file)) {
 ```
 
 ```{r}
-getwd()
-list.files("data/raw")
-file.exists("data/raw/video_view.csv")
-video_view <- read.csv("data/raw/video_view.csv")
+getwd() 
+list.files("data/raw")  
+file.exists("data/raw/video_view.csv") 
+video_view <- read.csv("data/raw/video_view.csv") 
 
-View(video_view)
+View(video_view) 
 ```
 ```

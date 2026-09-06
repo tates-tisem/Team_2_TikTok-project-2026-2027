@@ -35,6 +35,9 @@ git push origin main
 
 
 ```
+## Posit Assistant
+Used to better understand the code, errors, and complications. 
+
 ## Review and validation
 
 We did not use AI outputs without checking them. For R code, we ran the code in Positron and checked whether the files were created in the correct folders and whether the dataset was downloaded successfully.
