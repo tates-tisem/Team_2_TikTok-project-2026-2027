@@ -1,15 +1,23 @@
 ---
-title: "Untitled"
+title: "Download Raw Data"
 format: html
 ---
 
 ```{r}
+if (!requireNamespace("here", quietly = TRUE)) {
+  install.packages("here")
+}
+
+library(here) 
+# before the code created a new file under data/raw so it became data/raw/data/raw/video_view.csv when running with "preview". 
+# this library and code change in line 19 from "data_dir <- file.path("data", "raw")" --> "data_dir <- here("data", "raw")" solves the problem. 
+
 # URL of the dataset
 data_url <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/video_view.csv"
 
 # Define the folder and file path
-data_dir <- file.path("data", "raw")
-data_file <- file.path(data_dir, "video_view.csv")
+data_dir <- here("data", "raw") 
+data_file <- file.path(data_dir, "video_view.csv") 
 
 # Create data/raw if it does not exist
 if (!dir.exists(data_dir)) {
@@ -22,20 +30,23 @@ if (!file.exists(data_file)) {
     url = data_url,
     destfile = data_file,
     mode = "wb"
-  )
+  ) # this means 
   
   message("Data downloaded to: ", data_file)
 } else {
   message("File already exists. Download skipped.")
 }
+
+video_view <- read.csv(data_file)
+View(video_view)
 ```
+
 
 ```{r}
-getwd() 
-list.files("data/raw")  
-file.exists("data/raw/video_view.csv") 
-video_view <- read.csv("data/raw/video_view.csv") 
+# getwd() 
+# list.files("data/raw")  
+# file.exists("data/raw/video_view.csv") 
+# video_view <- read.csv("data/raw/video_view.csv") 
 
-View(video_view) 
-```
+# View(video_view) 
 ```

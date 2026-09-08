@@ -8,7 +8,8 @@ This repository is a template for the Data preparation and programming skills in
 
 ###  .gitignore
 1. Ignore specific (data) files to not be committed to repocitory.
-### Src
+
+### Summary
 1. Quadro code to transform raw data into analysable data sets.
 2. Run specific codes to understand, change, group data to conclude what can be derived from data.
 
@@ -20,6 +21,8 @@ This repository is a template for the Data preparation and programming skills in
 The goal of this project is to become familiar with the GitHub work space and collaborative work. 
 
 Contextwise, the project allows us to implement the quadro verbs in a way to analyse the data and derive conclusions from its output. 
+
+The methods used are described in 3. and 4. 
 
 
 ## 3. Explain how to set up the environment / install dependencies
@@ -35,8 +38,8 @@ Contextwise, the project allows us to implement the quadro verbs in a way to ana
 3. Define folder and file path for the destination of the data. Folder name: data\raw.
 4. Download the url to the designated file.
 5. In same code cell: add code to check if file already exists, if it exists, skip download.
-6. In different code cell: add command to open data in new variable named "video_view".
-7. Steps 1 & 2 are done by one team member then pushed to the other members. 
+6. In different code cell: add command to open data in new variable named "video_view". This can later be used for data analysis in the summary.qmd. 
+* Steps 1 & 2 are done by one team member then pushed to the other members. 
 
 ### .gitignore
 1. To not commit specific files, implement .gitignore
@@ -53,8 +56,8 @@ Contextwise, the project allows us to implement the quadro verbs in a way to ana
 ## 4. Explain how to reproduce the analysis (which scripts to run, in which order)
 
 ### Summary CSV files
-1. Create a quadro file called "summary.qmd" to annalyse the TikTok video dataset and put it into the already existing "src"folder.
-2. Load the CSV file from the data\raw folder.
+1. Create a quadro file called "summary.qmd" to annalyse the TikTok video dataset and put it into the already existing "summary"folder.
+2. Load the CSV file from the data\raw folder (this means that the video_view.qmd is the script to run before the summary.qmd).
 3. The goal is to determine whether short videos keep the audience for longer than longer videos.
 4. Start by summarising the total videos, total creators, average video length, and average watch rate.
 5. Then group by creator by summarizing the number of videos, the total impressions, and average watch rate. Then arrange from most to least total impressions.
@@ -67,7 +70,7 @@ Contextwise, the project allows us to implement the quadro verbs in a way to ana
 
 ## 5. List the group members and their contributions
 
-### Melike Ikikardes
+### Melek Zohre Ikikardes
 1. Work together with team on the data\raw code.
 2. Work together with team on .gitignore file.
 3. Figure out with the team how to use the push and pull function.
@@ -94,5 +97,8 @@ Contextwise, the project allows us to implement the quadro verbs in a way to ana
 2. Work together with team on the data\raw code.
 3. Work together with team on .gitignore file.
 4. Figure out with the team how to use the push and pull function.
-5. Complete the README (including project structue) assignment.
-6. Add to AI.md when necessary.
+5. Complete the README assignment (including project structue).
+6. (Re)organize project structure.
+7. Solve error in summary.qmd code. 
+8. Solve nestled folder problem.
+9. Add to AI.md when necessary.

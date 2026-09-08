@@ -37,6 +37,11 @@ git push origin main
 ```
 ## Posit Assistant
 Used to better understand the code, errors, and complications. 
+Also to help understand and solve the problem regarding unwanted nested folder creation: 
+"library(here)
+* before the code created a new file under data/raw so it became data/raw/data/raw/video_view.csv when running with "preview". 
+* adding library(here) and the code change from "data_dir <- file.path("data", "raw")" --> "data_dir <- here("data", "raw")" solves the problem. 
+
 
 ## Review and validation
 

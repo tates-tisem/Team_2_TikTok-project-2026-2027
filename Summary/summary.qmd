@@ -6,15 +6,30 @@ format: html
 # Goal
 
 We summarize `video_view.csv` and check one question:
-do short videos keep the audience better than long ones?
+Do short videos keep the audience better than long ones?
 
 # Load and inspect
 
 ```{r}
 library(tidyverse)
+if (!requireNamespace("here", quietly = TRUE)) {
+  install.packages("here")
+}
+library(here)
+# from video_view.qmd
+# Define the folder and file path
+data_dir <- here("data", "raw")
+data_file <- file.path(data_dir, "video_view.csv")
 
+# Create data/raw if it does not exist
+if (!dir.exists(data_dir)) {
+  dir.create(data_dir, recursive = TRUE)
+}
+
+# old code
 # download the data if it is not in the repo yet
-data_file <- "../Data/raw/video_view.csv"
+# data_file <- "Data/raw/video_view.csv"
+# this code did not run html, problems with defining path. So changed it.
 
 if (!file.exists(data_file)) {
   data_url <- paste0(
