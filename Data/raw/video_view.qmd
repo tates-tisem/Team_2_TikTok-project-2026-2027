@@ -40,13 +40,3 @@ if (!file.exists(data_file)) {
 video_view <- read.csv(data_file)
 View(video_view)
 ```
-
-
-```{r}
-# getwd() 
-# list.files("data/raw")  
-# file.exists("data/raw/video_view.csv") 
-# video_view <- read.csv("data/raw/video_view.csv") 
-
-# View(video_view) 
-```
