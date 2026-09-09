@@ -1,0 +1,43 @@
+
+```{r}
+if (!requireNamespace("here", quietly = TRUE)) {
+  install.packages("here")
+}
+library(here)
+
+data_url_2 <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/users.csv"
+
+data_dir <- here("Data", "DataA2") 
+data_file <- file.path(data_dir, "platform_users.csv") 
+
+# Create data/raw if it does not exist
+if (!dir.exists(data_dir)) {
+  dir.create(data_dir, recursive = TRUE)
+}
+
+# Download only if the file does not already exist
+if (!file.exists(data_file)) {
+  download.file(
+    url = data_url_2,
+    destfile = data_file,
+    mode = "wb"
+  ) 
+  
+  message("Data downloaded to: ", data_file)
+} else {
+  message("File already exists. Download skipped.")
+}
+
+platform_users <- read.csv(data_file)
+View(platform_users)
+```
+
+```{r}
+# check if data needs to be cleaned
+summary(platform_users) # if data needs to be cleaned it can be seen by looking at the summary of the data. If there are NA values or outliers, it may indicate that the data needs to be cleaned.
+# The "user_name", "baseline_login", "satiatoin_decay", "need_interaction", "base_videos_watched_mean", "base_videos_watched_sd", "pref_Comedy", "pref_Food", "pref_Gaming", "pref_Pets" have 20 NAs, which means that the data needs to be cleaned by removing the rows with NAs.
+
+#the code to do this looks like this
+
+
+```
