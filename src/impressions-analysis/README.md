@@ -13,19 +13,21 @@ The CSV file is not included in Git.
 
 ## Requirements
 - R
-- The R package tidyverse
+- The R package tidyverse installed with: install.packages("tidyverse")
 - Make
 
 ## Run the Analysis
 Open Terminal in the impressions-analysis folder and run:
     make
+Run make to build everything, or make clean to remove generated files.
 
 ## Data Cleaning & Main Findings
 The original dataset contains 95,737 rows.
 The mission_ids variable contains 13,926 missing values.
 There are 786 fully duplicated rows.
 After removing fully duplicated rows, 94,951 rows remain.
-The cleaned data still contains 161 repeated impression_id values with differences in other variables.
+The cleaned data still contains 161 repeated impression_id values with differences in other variables. These were kept, as they represent separate impressions of the same video
+at different timestamps within a session, not data errors.
 The feed source distribution is 51.6% preferred_new, 31.4% explore, and 17.0% known.
 
 ## Visualization
