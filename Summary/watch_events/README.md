@@ -7,7 +7,10 @@ length, and normalises the mixed-format timestamps.
 
 Open a terminal in this folder (`Summary/watch_events`) and type:
 
-    make
+        make -f makefile
+
+(`-f makefile` is needed with older versions of make on Windows when the
+folder path contains non-English characters. On other systems `make` is enough.)
 
 Or run the scripts one by one:
 
