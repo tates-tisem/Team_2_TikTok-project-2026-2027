@@ -296,5 +296,4 @@ ggplot(top_users, aes(x = need_interaction, y = preference_score, color = group)
   )
 
 # no connection (unexpected error, this part not finished sorry, it worked before)
-
 ```
