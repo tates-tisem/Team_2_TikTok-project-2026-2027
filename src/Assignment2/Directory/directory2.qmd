@@ -1,0 +1,322 @@
+
+```{r}
+# 1. look at how the traits are distributed
+# 2. check whether values are missing or implausible
+# 3. explore how different types of users compare.
+
+# load csv as variable
+library(tidyverse)
+
+platform_users_clean <- read.csv("Data/DataA2/cleaned_platform_users.csv")
+View(platform_users_clean)
+```
+
+```{r}
+# folder for ggplot
+
+library(here)
+if (!dir.exists("visuals")) dir.create("visuals")
+```
+
+```{r}
+# load uncleaned data to compare to cleaned data
+platform_users <- read.csv("Data/DataA2/platform_users.csv")
+View(platform_users_clean)
+```
+
+```{r}
+# visualisation 1: compare how raw data changed after it got cleaned
+if (!requireNamespace("naniar", quietly = TRUE)) { install.packages("naniar")}
+if (!requireNamespace("viridis", quietly = TRUE)) { install.packages("viridis")}
+
+library(naniar)
+library(viridis)
+
+# in raw dataset, user_id had 0 NAs
+# platform users --> platform_users_clean showed 200 rows being deleted. 
+# gg_miss_var(platform_users) visualised 10 columns with NAs with max 20 NAs.
+# this means there is 2 NAs per individual column, and no multiple NAs per row.
+
+missing_comparison <- tibble(
+  column = names(platform_users),
+  raw_na = colSums(is.na(platform_users)),
+  cleaned_na = colSums(is.na(platform_users_clean))
+) %>%
+  pivot_longer(cols = -column, names_to = "stage", values_to = "na_count") %>%
+  mutate(stage = factor(stage, levels = c("raw_na", "cleaned_na")))
+
+ggplot(missing_comparison, aes(x = reorder(column, na_count), y = na_count, fill = stage)) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  labs(title = "Missing values: raw vs cleaned", x = "Column", y = "Count of NAs")
+
+# comparison of columns with NAs and without more aesthetic commands
+library(ggplot2)
+library(viridis) # for color palette
+
+#| fig.height: 10
+#| fig.width: 8
+
+plot_missing_comparison <- ggplot(missing_comparison, aes(x = reorder(column, na_count), y = na_count, fill = stage)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.65) +
+  geom_text(
+    aes(label = na_count),
+    position = position_dodge(width = 0.8),
+    hjust = -0.3,
+    color = "black",
+    size = 2.5
+  ) +
+  scale_fill_viridis(discrete = TRUE, option = "B", begin = 0.2, end = 0.9) +
+  scale_y_continuous(limits = c(0, 20)) +
+  coord_flip() +
+  labs(
+    title = "Comparison of Missing Values: Raw vs. Cleaned Dataset",
+    x = "Column",
+    y = "Count of NAs",
+    fill = "Stage"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 14, family = "sans"),
+    axis.title.y = element_text(margin = margin(r = 10), face = "italic", family = "sans"),
+    axis.title.x = element_text(margin = margin(t = 10), face = "italic", family = "sans"),
+    legend.position = "top",
+    legend.title = element_text(face = "bold"),
+    axis.text.y = element_text(size = 10, family = "sans"),
+    axis.text.x = element_text(size = 10, family = "sans"),
+    text = element_text(family = "sans"),
+    panel.grid.major.y = element_blank()
+  )
+
+ggsave(
+  filename = "visuals/missing_comparison.png",
+  plot = plot_missing_comparison,
+  width = 9, height = 6, dpi = 300)
+
+
+
+# more code used to experiment, left in for future reference but not saved to folder
+gg_miss_var(platform_users) 
+# barplot per column
+gg_miss_upset(platform_users) 
+# overlap between NA columns
+
+
+
+# Filter to only users with at least one NA
+users_with_na <- platform_users %>%
+  filter(if_any(everything(), is.na)) %>%
+  select(user_id, everything()) 
+# Keep user_id for plotting
+
+
+summary_df <- tibble(
+  stage = c("Raw", "Cleaned"),
+  rows = c(nrow(platform_users), nrow(platform_users_clean)),
+  rows_with_na = c(nrow(users_with_na), 0)
+)
+
+ggplot(summary_df, aes(x = stage, y = rows, fill = stage)) +
+  geom_col() +
+  geom_text(aes(label = rows), vjust = -0.5) +
+  labs(title = "Data before and after cleaning", y = "Number of rows", x = "")
+
+
+numeric_cols <- users_with_na %>% 
+  select(where(is.numeric)) %>% 
+  colnames()
+
+```
+
+```{r}
+# back to platform_users_clean
+# ggplot comparison: how does satiation_decay differ between pref_BeautyFashion and pref_Gaming per user. 
+# 
+# 1. mutate two new groups with users that prefer beauty/fashion over gaming and vice versa.
+# 2. 
+
+user_groups <- platform_users_clean %>%
+  mutate(
+    preference_group = case_when(
+      pref_BeautyFashion > pref_Gaming ~ "Beauty/Fashion",
+      pref_Gaming > pref_BeautyFashion ~ "Gaming",
+      TRUE ~ "Neutral"
+    )
+  )
+
+# Summary statistics
+user_groups %>%
+  group_by(preference_group) %>%
+  summarise(
+    n_users = n(),
+    mean_satiation = mean(satiation_decay, na.rm = TRUE),
+    sd_satiation = sd(satiation_decay, na.rm = TRUE),
+    median_satiation = median(satiation_decay, na.rm = TRUE)
+  )
+
+satiation_pref <- ggplot(user_groups, aes(x = preference_group, y = satiation_decay, fill = preference_group)) +
+  geom_boxplot(alpha = 0.7, width = 0.4) +
+  scale_fill_manual(values = c("Beauty/Fashion" = "#FF69B4", "Gaming" = "#4169E1")) +
+  labs(
+    title = "Satiation Decay by User Preference: Beauty/Fashion vs Gaming",
+    x = "User Preference Group",
+    y = "Satiation Decay",
+    fill = "Preference"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 14),
+    legend.position = "bottom",
+    panel.grid.major.x = element_blank()
+  )
+
+ggsave(
+  filename = "visuals/satiation_pref.png",
+  plot = satiation_pref,
+  width = 9, height = 6, dpi = 300)
+
+
+
+# there is no noticeable difference in satiation decay between the two groups. so prefering one topic over the other does not have impact on satiation.
+```
+
+
+```{r}
+# create random sample of platform_users_clean to not overcrowd pointplot
+# 
+set.seed(77) 
+random_sample <- platform_users_clean[sample.int(nrow(platform_users_clean),800),]
+
+
+library(tidyverse)
+
+# seperate datatable for desired columns.
+# goal: is there a correlation between beauty/fashion preference and the amount of videos watched?
+
+cor_beauty_video <- ggplot(random_sample, aes(x = pref_BeautyFashion, y = base_videos_watched_mean)) +
+  geom_point(alpha = 0.5, size = 2, color = "#FF69B4") +
+  geom_smooth(method = "lm", se = TRUE, color = "#FF1493", fill = "#FFB6C1", alpha = 0.2) +
+  labs(
+    title = "Correlation: Beauty/Fashion Preference vs Videos Watched",
+    x = "Beauty/Fashion Preference Score",
+    y = "Mean Videos Watched",
+    caption = paste("Correlation:", round(cor(random_sample$pref_BeautyFashion, 
+                                               random_sample$base_videos_watched_mean, 
+                                               use = "complete.obs"), 3))
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 14),
+    plot.caption = element_text(hjust = 0.5, size = 11)
+  )
+
+ggsave(
+  filename = "visuals/cor_beauty_video.png",
+  plot = cor_beauty_video,
+  width = 9, height = 6, dpi = 300)
+
+# no there is not, no clear trend visible. 
+
+
+
+
+# goal: compare the top 100 pref.Gaming vs the top 100 pref.FashionBeauty based on interaction.
+# from platform_users_clean, create two new datasets for "interaction and prefFashionBeauty" and "interaction and prefGaming"
+
+# Top 100 Beauty/Fashion users
+top_beauty <- platform_users_clean %>%
+  arrange(desc(pref_BeautyFashion)) %>%
+  slice(1:100) %>%
+  mutate(group = "Top Beauty/Fashion")
+
+# Top 100 Gaming users
+top_gaming <- platform_users_clean %>%
+  arrange(desc(pref_Gaming)) %>%
+  slice(1:100) %>%
+  mutate(group = "Top Gaming")
+
+# Combine both groups
+top_users <- bind_rows(top_beauty, top_gaming)
+
+# Create point plot
+ggplot(top_users, aes(x = need_interaction, y = group, color = group)) +
+  geom_point(size = 3, alpha = 0.6) +
+  scale_color_manual(
+    values = c("Top Beauty/Fashion" = "#FF69B4", "Top Gaming" = "#4169E1")
+  ) +
+  labs(
+    title = "Need for Interaction: Top 100 Beauty/Fashion vs Top 100 Gaming Users",
+    x = "Need for Interaction Score",
+    y = "User Group",
+    color = "Group"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 14),
+    legend.position = "bottom",
+    panel.grid.major.y = element_blank()
+  )
+
+# also visualise grade of preference to see if there is a connection
+top_beauty2 <- platform_users_clean %>%
+  arrange(desc(pref_BeautyFashion)) %>%
+  slice(1:100) %>%
+  mutate(group = "Top Beauty/Fashion2",
+         preference_score = pref_BeautyFashion)
+
+top_gaming2 <- platform_users_clean %>%
+  arrange(desc(pref_Gaming)) %>%
+  slice(1:100) %>%
+  mutate(group = "Top Gaming2",
+         preference_score = pref_Gaming)
+
+top_users2 <- bind_rows(top_beauty2, top_gaming2)
+
+ggplot(top_users, aes(x = need_interaction, y = preference_score, color = group)) +
+  geom_point(size = 3, alpha = 0.6) +
+  scale_color_manual(
+    values = c("Top Beauty/Fashion2" = "#FF69B4", "Top Gaming2" = "#4169E1")
+  ) +
+  labs(
+    title = "Need for Interaction vs. Preference Score\nTop 100 Beauty/Fashion vs Top 100 Gaming Users",
+    x = "Need for Interaction Score",
+    y = "Group-specific Preference Score",
+    color = "Group"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 15),
+    legend.position = "bottom",
+    panel.grid.major.y = element_line(color = "gray90")
+  )
+
+# no connection
+
+#delete this
+preference_data <- random_sample %>%
+  select(user_id, need_interaction, pref_FitnessSports, pref_BeautyFashion, pref_Gaming) %>%
+  pivot_longer(
+    cols = starts_with("pref_"),
+    names_to = "preference",
+    values_to = "preference_score"
+  ) %>%
+  mutate(preference = str_remove(preference, "pref_"))
+
+ggplot(preference_data, aes(x = need_interaction, y = preference_score, color = preference)) +
+  geom_point(alpha = 0.6, size = 2.5) +
+  scale_color_manual(
+    values = c("FitnessSports" = "#FF6B6B", "BeautyFashion" = "#FF69B4", "Gaming" = "#4169E1")
+  ) +
+  labs(
+    title = "Preference Scores vs Need for Interaction",
+    x = "Need for Interaction",
+    y = "Preference Score",
+    color = "Preference Type"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 14),
+    legend.position = "bottom",
+    panel.grid.major = element_line(color = "lightgray", size = 0.3)
+  )
+```
