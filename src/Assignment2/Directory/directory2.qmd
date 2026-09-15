@@ -239,7 +239,7 @@ top_gaming <- platform_users_clean %>%
 top_users <- bind_rows(top_beauty, top_gaming)
 
 # Create point plot
-ggplot(top_users, aes(x = need_interaction, y = group, color = group)) +
+beautyvsgaming <- ggplot(top_users, aes(x = need_interaction, y = group, color = group)) +
   geom_point(size = 3, alpha = 0.6) +
   scale_color_manual(
     values = c("Top Beauty/Fashion" = "#FF69B4", "Top Gaming" = "#4169E1")
@@ -256,6 +256,11 @@ ggplot(top_users, aes(x = need_interaction, y = group, color = group)) +
     legend.position = "bottom",
     panel.grid.major.y = element_blank()
   )
+
+ggsave(
+  filename = "visuals/beautyvsgaming.png",
+  plot = beautyvsgaming,
+  width = 9, height = 6, dpi = 300)
 
 # also visualise grade of preference to see if there is a connection
 top_beauty2 <- platform_users_clean %>%
@@ -290,33 +295,6 @@ ggplot(top_users, aes(x = need_interaction, y = preference_score, color = group)
     panel.grid.major.y = element_line(color = "gray90")
   )
 
-# no connection
+# no connection (unexpected error, this part not finished sorry, it worked before)
 
-#delete this
-preference_data <- random_sample %>%
-  select(user_id, need_interaction, pref_FitnessSports, pref_BeautyFashion, pref_Gaming) %>%
-  pivot_longer(
-    cols = starts_with("pref_"),
-    names_to = "preference",
-    values_to = "preference_score"
-  ) %>%
-  mutate(preference = str_remove(preference, "pref_"))
-
-ggplot(preference_data, aes(x = need_interaction, y = preference_score, color = preference)) +
-  geom_point(alpha = 0.6, size = 2.5) +
-  scale_color_manual(
-    values = c("FitnessSports" = "#FF6B6B", "BeautyFashion" = "#FF69B4", "Gaming" = "#4169E1")
-  ) +
-  labs(
-    title = "Preference Scores vs Need for Interaction",
-    x = "Need for Interaction",
-    y = "Preference Score",
-    color = "Preference Type"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5, size = 14),
-    legend.position = "bottom",
-    panel.grid.major = element_line(color = "lightgray", size = 0.3)
-  )
 ```
