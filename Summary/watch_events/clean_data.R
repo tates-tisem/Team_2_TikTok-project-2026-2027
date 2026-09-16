@@ -48,7 +48,7 @@ d$watch_seconds[missing_seconds] <- difftime(d$ended_at[missing_seconds], d$star
 video_lengths <- d %>%
   filter(action == "watch_full") %>%
   group_by(video_id) %>%
-  summarise(video_length_sec = max(watch_seconds))
+  summarise(video_length_sec = max(watch_seconds, na.rm = TRUE))
 
 d <- merge(d, video_lengths, by = "video_id", all.x = TRUE)
 
