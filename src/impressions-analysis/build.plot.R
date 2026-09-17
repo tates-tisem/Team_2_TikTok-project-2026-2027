@@ -25,7 +25,10 @@ source_summary <- data_clean %>%
   mutate(percentage = n / sum(n) * 100) %>%
   arrange(desc(n))
 print(source_summary)
-dir.create("png", showWarnings = FALSE)
+
+# dir.create("png", showWarnings = FALSE) -> downloads to working directory instead of clear path
+dir.create(file.path("src", "impressions-analysis", "png"), showWarnings = FALSE, recursive = TRUE)
+
 score_graph <- ggplot(data_clean, aes(x = score_total, y = feed_rank, color = source_bucket)) + 
   geom_point(alpha = 0.7, size = 2) +
   labs(
