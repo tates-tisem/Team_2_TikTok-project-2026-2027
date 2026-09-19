@@ -22,13 +22,15 @@ sessions <- sessions %>%
 
 # 1. Session duration
 duration_plot <- ggplot(data = sessions, aes(x = session_duration_sec)) +
-  geom_histogram(fill = "steelblue")
-
+  geom_histogram(fill = "steelblue", bins = 30)
+  labs(title = "Distribution of Session Duration", x = "session_duration_sec", y = "count")
+  
 ggsave("../../gen/figures/session_duration.png", duration_plot)
 
 # 2. Videos viewed
 videos_plot <- ggplot(data = sessions, aes(x = videos_viewed)) +
-  geom_histogram(fill = "mediumpurple")
+  geom_histogram(fill = "mediumpurple", bins = 30)
+labs(title = "Distribution of Videos Viewed per Session", x = "videos_viewed", y = "count")
 
 ggsave("../../gen/figures/videos_viewed.png", videos_plot)
 
@@ -37,8 +39,8 @@ user_sessions <- sessions %>%
   count(user_id)
 
 user_plot <- ggplot(data = user_sessions, aes(x = n)) +
-  geom_histogram(fill = "orange")
-
+  geom_histogram(fill = "orange", bins = 30)
+labs(title = "Distribution of Sessions per User", x = "n", y = "count")
 ggsave("../../gen/figures/sessions_per_user.png", user_plot)
 
 # 4. Daily sessions over time
@@ -47,5 +49,5 @@ daily_sessions <- sessions %>%
 
 time_plot <- ggplot(data = daily_sessions, aes(x = date, y = n)) +
   geom_line()
-
+labs(title = "Daily Sessions Over Time", x = "date", y = "n")
 ggsave("../../gen/figures/daily_sessions.png", time_plot)
