@@ -1,0 +1,69 @@
+
+```{r}
+# 1. download raw dataset locally
+library(here)
+
+data_url_2 <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/users.csv"
+
+data_dir <- here("Data", "DataA2") 
+data_file <- file.path(data_dir, "platform_users.csv") 
+
+# Create data/raw if it does not exist
+if (!dir.exists(data_dir)) {
+  dir.create(data_dir, recursive = TRUE)
+}
+
+# Download only if the file does not already exist
+if (!file.exists(data_file)) {
+  download.file(
+    url = data_url_2,
+    destfile = data_file,
+    mode = "wb"
+  ) 
+  
+  message("Data downloaded to: ", data_file)
+} else {
+  message("File already exists. Download skipped.")
+}
+
+platform_users <- read.csv(data_file)
+head(platform_users)
+```
+
+```{r}
+# 2. check if data needs to be cleaned
+library(tidyverse)
+
+# if data needs to be cleaned it can be seen by looking at the summary of the data. If there are NA values or outliers, it may indicate that the data needs to be cleaned.
+summary(platform_users) 
+names(platform_users)
+
+# --> The "user_name", "baseline_login", "satiatoin_decay", "need_interaction", "base_videos_watched_mean", "base_videos_watched_sd", "pref_Comedy", "pref_Food", "pref_Gaming", "pref_Pets" have 20 NAs,
+# --> remove NAs to clean dataset
+
+platform_users %>% summarise(across(everything(), ~sum(is.na(.x)))) # posit assistant, this is clearer instead of manually looking at summary
+
+platform_users_clean <- platform_users %>% drop_na() # remove all rows with NAs
+platform_users_clean <- platform_users_clean %>% distinct() # remove all duplicates, nothing changed (safe measure)
+sapply(platform_users_clean, class) # all good, nothing to change
+
+# identify potential outliers 
+# analyse data table --> conclude: (base_video_watched_mean) & (base_videos_watched_sd) =/ negative 
+platform_users_clean %>%
+  filter( base_videos_watched_mean < 0 | base_videos_watched_sd < 0) %>%
+  select(user_name, base_videos_watched_mean, base_videos_watched_sd) # no values below 0, no cleaning needed
+```
+
+```{r}
+# 3. create cleaned data set
+# not necessary but better so everyone can store this dataset locally instead of rerunning cleaning code before executing analysis code
+
+# create new csv and store in data_dir (Data/DataA2) 
+write.csv(platform_users_clean, file.path(data_dir, "cleaned_platform_users.csv"), row.names = FALSE)
+```
+
+```{r}
+# 4. Run cells 1-2-3 once, then only run this to access variable
+platform_users_clean <- read.csv(file.path(data_dir, "cleaned_platform_users.csv"))
+head(platform_users_clean)
+```
