@@ -7,4 +7,5 @@ This folder contains the session analysis.
 Run:
 
 ```bash
-make -f src/session-analysis/Makefile
+make -C src/session-analysis
+```
