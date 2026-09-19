@@ -31,6 +31,19 @@ duration_watch_plot <- ggplot(
 ) +
   geom_point()
 
+# Videos viewed vs watch time
+videos_watch_plot <- ggplot(
+  data = sessions,
+  aes(x = videos_viewed, y = watch_seconds)
+) +
+  geom_point() +
+  labs(title = "Videos Viewed vs Watch Time", x = "videos_viewed", y = "watch_seconds")
+
+ggsave(
+  "../../gen/figures/videos_vs_watch.png",
+  videos_watch_plot
+)
+
 ggsave(
   "../../gen/figures/duration_vs_watch.png",
   duration_watch_plot
