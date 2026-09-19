@@ -6,28 +6,25 @@
 
 # load csv as variable
 library(tidyverse)
+library(here)
 
-platform_users_clean <- read.csv("Data/DataA2/cleaned_platform_users.csv")
-View(platform_users_clean)
+platform_users_clean <- read.csv(here("Data", "DataA2", "cleaned_platform_users.csv"))
 ```
 
 ```{r}
 # folder for ggplot
 
 library(here)
-if (!dir.exists("visuals")) dir.create("visuals")
+dir.create(here("visuals"), showWarnings = FALSE)
 ```
 
 ```{r}
 # load uncleaned data to compare to cleaned data
-platform_users <- read.csv("Data/DataA2/platform_users.csv")
-View(platform_users_clean)
+platform_users <- read.csv(here("Data", "DataA2", "platform_users.csv"))
 ```
 
 ```{r}
 # visualisation 1: compare how raw data changed after it got cleaned
-if (!requireNamespace("naniar", quietly = TRUE)) { install.packages("naniar")}
-if (!requireNamespace("viridis", quietly = TRUE)) { install.packages("viridis")}
 
 library(naniar)
 library(viridis)
@@ -89,7 +86,7 @@ plot_missing_comparison <- ggplot(missing_comparison, aes(x = reorder(column, na
   )
 
 ggsave(
-  filename = "visuals/missing_comparison.png",
+  filename = here("visuals", "missing_comparison.png"),
   plot = plot_missing_comparison,
   width = 9, height = 6, dpi = 300)
 
@@ -171,7 +168,7 @@ satiation_pref <- ggplot(user_groups, aes(x = preference_group, y = satiation_de
   )
 
 ggsave(
-  filename = "visuals/satiation_pref.png",
+  filename = here("visuals", "satiation_pref.png"),
   plot = satiation_pref,
   width = 9, height = 6, dpi = 300)
 
@@ -189,6 +186,7 @@ random_sample <- platform_users_clean[sample.int(nrow(platform_users_clean),800)
 
 
 library(tidyverse)
+library(here)
 
 # seperate datatable for desired columns.
 # goal: is there a correlation between beauty/fashion preference and the amount of videos watched?
@@ -211,7 +209,7 @@ cor_beauty_video <- ggplot(random_sample, aes(x = pref_BeautyFashion, y = base_v
   )
 
 ggsave(
-  filename = "visuals/cor_beauty_video.png",
+  filename = here("visuals", "cor_beauty_video.png"),
   plot = cor_beauty_video,
   width = 9, height = 6, dpi = 300)
 
@@ -258,7 +256,7 @@ beautyvsgaming <- ggplot(top_users, aes(x = need_interaction, y = group, color =
   )
 
 ggsave(
-  filename = "visuals/beautyvsgaming.png",
+  filename = here("visuals", "beautyvsgaming.png"),
   plot = beautyvsgaming,
   width = 9, height = 6, dpi = 300)
 

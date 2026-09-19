@@ -1,9 +1,6 @@
 
 ```{r}
 # 1. download raw dataset locally
-if (!requireNamespace("here", quietly = TRUE)) {
-  install.packages("here")
-}
 library(here)
 
 data_url_2 <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/users.csv"
@@ -30,7 +27,7 @@ if (!file.exists(data_file)) {
 }
 
 platform_users <- read.csv(data_file)
-View(platform_users)
+head(platform_users)
 ```
 
 ```{r}
@@ -67,6 +64,6 @@ write.csv(platform_users_clean, file.path(data_dir, "cleaned_platform_users.csv"
 
 ```{r}
 # 4. Run cells 1-2-3 once, then only run this to access variable
-platform_users_clean <- read.csv("Data/DataA2/cleaned_platform_users.csv")
-View(platform_users_clean)
+platform_users_clean <- read.csv(file.path(data_dir, "cleaned_platform_users.csv"))
+head(platform_users_clean)
 ```
