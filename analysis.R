@@ -1,14 +1,12 @@
 library(tidyverse)
 library(here)
-library(ggplot2)
 
 # data packages
 # raw
 data_url_2 <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/users.csv"
-data_dir <- here("Data", "DataA2") 
-data_file <- file.path(data_dir, "platform_users.csv") 
-
-if (!dir.exists(data_dir)) {dir.create(data_dir, recursive = TRUE)}
+data_dir <- here("Data", "DataA2")
+data_file <- file.path(data_dir, "platform_users.csv")
+clean_file <- file.path(data_dir, "cleaned_platform_users.csv")
 
 if (!dir.exists(data_dir)) {
   dir.create(data_dir, recursive = TRUE)
@@ -20,21 +18,17 @@ if (!file.exists(data_file)) {
     url = data_url_2,
     destfile = data_file,
     mode = "wb"
-  ) 
-  
-  message("Data downloaded to: ", data_file)} else {
-  message("File already exists. Download skipped.")}
+  )
+  message("Data downloaded to: ", data_file)
+} else {
+  message("File already exists. Download skipped.")
+}
 
-
-if (!file.exists("platform_users.csv")) download.file(data_url_2, "platform_users.csv")
-
-platform_users <- read_csv("platform_users.csv")
+platform_users <- read_csv(data_file, show_col_types = FALSE)
 
 # cleaned
 platform_users_clean <- platform_users %>% drop_na()
-write.csv(platform_users_clean, file.path("Data","DataA2", "cleaned_platform_users.csv"), row.names = FALSE)
-
-platform_users_clean <- read.csv("Data/DataA2/cleaned_platform_users.csv")
+write.csv(platform_users_clean, clean_file, row.names = FALSE)
 
 # ggplot
 top_beauty <- platform_users_clean %>%
