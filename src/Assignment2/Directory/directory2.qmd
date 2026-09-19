@@ -13,8 +13,6 @@ platform_users_clean <- read.csv(here("Data", "DataA2", "cleaned_platform_users.
 
 ```{r}
 # folder for ggplot
-
-library(here)
 dir.create(here("visuals"), showWarnings = FALSE)
 ```
 
@@ -26,7 +24,6 @@ platform_users <- read.csv(here("Data", "DataA2", "platform_users.csv"))
 ```{r}
 # visualisation 1: compare how raw data changed after it got cleaned
 
-library(naniar)
 library(viridis)
 
 # in raw dataset, user_id had 0 NAs
@@ -42,18 +39,6 @@ missing_comparison <- tibble(
   pivot_longer(cols = -column, names_to = "stage", values_to = "na_count") %>%
   mutate(stage = factor(stage, levels = c("raw_na", "cleaned_na")))
 
-ggplot(missing_comparison, aes(x = reorder(column, na_count), y = na_count, fill = stage)) +
-  geom_col(position = "dodge") +
-  coord_flip() +
-  labs(title = "Missing values: raw vs cleaned", x = "Column", y = "Count of NAs")
-
-# comparison of columns with NAs and without more aesthetic commands
-library(ggplot2)
-library(viridis) # for color palette
-
-#| fig.height: 10
-#| fig.width: 8
-
 plot_missing_comparison <- ggplot(missing_comparison, aes(x = reorder(column, na_count), y = na_count, fill = stage)) +
   geom_col(position = position_dodge(width = 0.8), width = 0.65) +
   geom_text(
@@ -64,7 +49,7 @@ plot_missing_comparison <- ggplot(missing_comparison, aes(x = reorder(column, na
     size = 2.5
   ) +
   scale_fill_viridis(discrete = TRUE, option = "B", begin = 0.2, end = 0.9) +
-  scale_y_continuous(limits = c(0, 20)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
   coord_flip() +
   labs(
     title = "Comparison of Missing Values: Raw vs. Cleaned Dataset",
@@ -89,40 +74,16 @@ ggsave(
   filename = here("visuals", "missing_comparison.png"),
   plot = plot_missing_comparison,
   width = 9, height = 6, dpi = 300)
-
-
-
-# more code used to experiment, left in for future reference but not saved to folder
-gg_miss_var(platform_users) 
-# barplot per column
-gg_miss_upset(platform_users) 
-# overlap between NA columns
-
-
-
-# Filter to only users with at least one NA
+# how many rows were dropped by the cleaning step
 users_with_na <- platform_users %>%
-  filter(if_any(everything(), is.na)) %>%
-  select(user_id, everything()) 
-# Keep user_id for plotting
-
+  filter(if_any(everything(), is.na))
 
 summary_df <- tibble(
   stage = c("Raw", "Cleaned"),
   rows = c(nrow(platform_users), nrow(platform_users_clean)),
   rows_with_na = c(nrow(users_with_na), 0)
 )
-
-ggplot(summary_df, aes(x = stage, y = rows, fill = stage)) +
-  geom_col() +
-  geom_text(aes(label = rows), vjust = -0.5) +
-  labs(title = "Data before and after cleaning", y = "Number of rows", x = "")
-
-
-numeric_cols <- users_with_na %>% 
-  select(where(is.numeric)) %>% 
-  colnames()
-
+summary_df
 ```
 
 ```{r}
@@ -153,7 +114,7 @@ user_groups %>%
 
 satiation_pref <- ggplot(user_groups, aes(x = preference_group, y = satiation_decay, fill = preference_group)) +
   geom_boxplot(alpha = 0.7, width = 0.4) +
-  scale_fill_manual(values = c("Beauty/Fashion" = "#FF69B4", "Gaming" = "#4169E1")) +
+  scale_fill_manual(values = c("Beauty/Fashion" = "#FF69B4", "Gaming" = "#4169E1", "Neutral" = "gray60")) +
   labs(
     title = "Satiation Decay by User Preference: Beauty/Fashion vs Gaming",
     x = "User Preference Group",
@@ -183,10 +144,6 @@ ggsave(
 # 
 set.seed(77) 
 random_sample <- platform_users_clean[sample.int(nrow(platform_users_clean),800),]
-
-
-library(tidyverse)
-library(here)
 
 # seperate datatable for desired columns.
 # goal: is there a correlation between beauty/fashion preference and the amount of videos watched?
