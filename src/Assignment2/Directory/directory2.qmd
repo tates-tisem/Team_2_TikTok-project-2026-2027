@@ -277,7 +277,7 @@ top_gaming2 <- platform_users_clean %>%
 
 top_users2 <- bind_rows(top_beauty2, top_gaming2)
 
-ggplot(top_users, aes(x = need_interaction, y = preference_score, color = group)) +
+ggplot(top_users2, aes(x = need_interaction, y = preference_score, color = group)) +
   geom_point(size = 3, alpha = 0.6) +
   scale_color_manual(
     values = c("Top Beauty/Fashion2" = "#FF69B4", "Top Gaming2" = "#4169E1")
@@ -295,5 +295,5 @@ ggplot(top_users, aes(x = need_interaction, y = preference_score, color = group)
     panel.grid.major.y = element_line(color = "gray90")
   )
 
-# no connection (unexpected error, this part not finished sorry, it worked before)
+# no connection between need for interaction and how strong the preference is.
 ```
