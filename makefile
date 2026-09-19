@@ -1,4 +1,11 @@
+OUTPUTS = visuals/missing_comparison.png visuals/satiation_pref.png visuals/cor_beauty_video.png visuals/beautyvsgaming.png
 
-visuals/beautyvsgaming.png: analysis.R Data/DataA2/cleaned_platform_users.csv
+all: $(OUTPUTS)
+
+$(OUTPUTS): analysis.R
 	Rscript analysis.R
 
+clean:
+	rm -rf visuals Data/DataA2/cleaned_platform_users.csv
+
+.PHONY: all clean
