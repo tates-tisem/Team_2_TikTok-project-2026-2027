@@ -30,6 +30,10 @@ platform_users <- read_csv(data_file, show_col_types = FALSE)
 platform_users_clean <- platform_users %>% drop_na()
 write.csv(platform_users_clean, clean_file, row.names = FALSE)
 
+# output folder for the plots
+visuals_dir <- here("visuals")
+dir.create(visuals_dir, showWarnings = FALSE)
+
 # ggplot
 top_beauty <- platform_users_clean %>%
   arrange(desc(pref_BeautyFashion)) %>%
@@ -65,6 +69,6 @@ beautyvsgaming <- ggplot(top_users, aes(x = need_interaction, y = group, color =
   )
 
 ggsave(
-  filename = "visuals/beautyvsgaming.png",
+  filename = file.path(visuals_dir, "beautyvsgaming.png"),
   plot = beautyvsgaming,
   width = 9, height = 6, dpi = 300)
