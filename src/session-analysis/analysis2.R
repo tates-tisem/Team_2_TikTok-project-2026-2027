@@ -1,5 +1,15 @@
 library(tidyverse)
 
+# new folders 
+if (!dir.exists("../../data")) dir.create("../../data", recursive = TRUE)
+if (!dir.exists("../../gen/figures")) dir.create("../../gen/figures", recursive = TRUE)
+
+# download the data 
+url <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/sessions.csv"
+if (!file.exists("../../data/sessions.csv")) {
+  download.file(url, destfile = "../../data/sessions.csv", mode = "wb")
+}
+
 sessions <- read_csv("../../data/sessions.csv")
 
 # Session duration vs videos viewed
