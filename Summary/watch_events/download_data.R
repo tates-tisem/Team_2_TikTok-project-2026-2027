@@ -11,6 +11,8 @@ if (!dir.exists(raw_dir)) {
 url  <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/watch_events.csv"
 dest <- file.path(raw_dir, "watch_events.csv")
 
-download.file(url, destfile = dest, mode = "wb")
+if (!file.exists(dest)) {
+  download.file(url, destfile = dest, mode = "wb")
+}
 
 cat("Downloaded raw data to:", dest, "\n")
