@@ -57,7 +57,7 @@ d <- merge(d, video_lengths, by = "video_id", all.x = TRUE)
 
 print(sum(is.na(d$started_at_std)))
 print(sum(is.na(d$watch_seconds)))
-
+print(sum(is.na(d$video_length_sec)))
 
 # 5. saving to clean folder
 write.csv(d, "../../Data/clean/watch_events_clean.csv", row.names = FALSE)
