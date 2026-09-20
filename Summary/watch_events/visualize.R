@@ -22,7 +22,8 @@ p1 <- ggplot(d, aes(x = action)) +
 ggsave("plots/actions.png", p1, width = 7, height = 5)
 
 
-# plot 2: watch time vs video length
+# plot 2:  
+# Sample 3000 rows to make the scatter plot easier to read.
 set.seed(123)
 d_sample <- sample_n(d, 3000)
 
