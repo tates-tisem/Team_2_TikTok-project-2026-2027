@@ -35,7 +35,7 @@ Create a new folder in the code source folder (src), this will be your directory
 
 ```
 Data/DataA2/         download code (DataA2.qmd) and the local data files
-src/Assignment2/
+src/Assignment2/users_analysis/
     analysis.R       build script: downloads, cleans and writes every figure
     makefile         runs analysis.R when a figure is missing or out of date
     visuals/         the four .png figures

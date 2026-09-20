@@ -42,7 +42,7 @@ platform_users_clean <- platform_users %>%
 write.csv(platform_users_clean, clean_file, row.names = FALSE)
 
 # output folder for the plots
-visuals_dir <- here("src", "Assignment2", "visuals")
+visuals_dir <- here("src", "Assignment2", "users_analysis", "visuals")
 dir.create(visuals_dir, showWarnings = FALSE)
 
 # ------------------------------------- 1. missing values, raw vs clean ----

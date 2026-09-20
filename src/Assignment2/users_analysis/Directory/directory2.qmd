@@ -50,7 +50,7 @@ platform_users_clean %>%
 ```
 
 ```{r}
-include_graphics(here("src", "Assignment2", "visuals", "missing_comparison.png"))
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "missing_comparison.png"))
 ```
 
 ## How different types of users compare
@@ -78,7 +78,7 @@ user_groups %>%
 ```
 
 ```{r}
-include_graphics(here("src", "Assignment2", "visuals", "satiation_pref.png"))
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "satiation_pref.png"))
 ```
 
 There is no noticeable difference in satiation decay between the two groups,
@@ -90,7 +90,7 @@ Is there a correlation between beauty/fashion preference and the amount of
 videos watched?
 
 ```{r}
-include_graphics(here("src", "Assignment2", "visuals", "cor_beauty_video.png"))
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "cor_beauty_video.png"))
 ```
 
 No, there is no clear trend visible.
@@ -101,7 +101,7 @@ Compare the top 100 pref_Gaming users against the top 100 pref_BeautyFashion
 users, based on their need for interaction.
 
 ```{r}
-include_graphics(here("src", "Assignment2", "visuals", "beautyvsgaming.png"))
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "beautyvsgaming.png"))
 ```
 
 ```{r}
