@@ -28,3 +28,5 @@ source_summary <- data_clean %>%
   mutate(percentage = n / sum(n) * 100) %>%
   arrange(desc(n))
 print(source_summary)
+
+write.csv(data_clean, file.path("Data", "cleaned_data_impressions.csv"), row.names = FALSE)
