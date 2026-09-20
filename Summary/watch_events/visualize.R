@@ -37,7 +37,8 @@ ggsave("plots/watch_time_vs_length.png", p2, width = 7, height = 5)
 
 
 # plot 3: events per day
-d$day <- as.Date(d$started_at_std)
+d <- d %>%
+  mutate(day = as.Date(started_at_std))
 
 p3 <- ggplot(d, aes(x = day)) +
   geom_bar(fill = "darkorange") +
