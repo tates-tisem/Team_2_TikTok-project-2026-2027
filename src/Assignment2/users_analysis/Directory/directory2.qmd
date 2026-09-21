@@ -1,0 +1,142 @@
+
+# Assignment 2 - analysis of the platform users
+
+The figures below are produced by `analysis.R` (run it with `make`).
+This document reads the cleaned data table and discusses the results.
+
+```{r}
+# 1. look at how the traits are distributed
+# 2. check whether values are missing or implausible
+# 3. explore how different types of users compare.
+
+library(tidyverse)
+library(here)
+library(knitr)
+
+platform_users <- read.csv(here("Data", "DataA2", "platform_users.csv"))
+platform_users_clean <- read.csv(here("Data", "DataA2", "cleaned_platform_users.csv"))
+```
+
+## How the traits are distributed
+
+```{r}
+summary(platform_users_clean)
+```
+
+## Missing and implausible values
+
+```{r}
+# in raw dataset, user_id had 0 NAs
+# platform users --> platform_users_clean showed 200 rows being deleted.
+# 10 columns hold NAs with a maximum of 20 NAs each,
+# so there are 2 NAs per individual column and no multiple NAs per row.
+
+users_with_na <- platform_users %>%
+  filter(if_any(everything(), is.na))
+
+summary_df <- tibble(
+  stage = c("Raw", "Cleaned"),
+  rows = c(nrow(platform_users), nrow(platform_users_clean)),
+  rows_with_na = c(nrow(users_with_na), 0)
+)
+summary_df
+```
+
+```{r}
+# no negative values in the two watch-time columns, so nothing implausible
+platform_users_clean %>%
+  filter(base_videos_watched_mean < 0 | base_videos_watched_sd < 0) %>%
+  nrow()
+```
+
+```{r}
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "missing_comparison.png"))
+```
+
+## How different types of users compare
+
+### Satiation decay by preference
+
+```{r}
+user_groups <- platform_users_clean %>%
+  mutate(
+    preference_group = case_when(
+      pref_BeautyFashion > pref_Gaming ~ "Beauty/Fashion",
+      pref_Gaming > pref_BeautyFashion ~ "Gaming",
+      TRUE ~ "Neutral"
+    )
+  )
+
+user_groups %>%
+  group_by(preference_group) %>%
+  summarise(
+    n_users = n(),
+    mean_satiation = mean(satiation_decay, na.rm = TRUE),
+    sd_satiation = sd(satiation_decay, na.rm = TRUE),
+    median_satiation = median(satiation_decay, na.rm = TRUE)
+  )
+```
+
+```{r}
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "satiation_pref.png"))
+```
+
+There is no noticeable difference in satiation decay between the two groups,
+so preferring one topic over the other does not have an impact on satiation.
+
+### Beauty/Fashion preference vs videos watched
+
+Is there a correlation between beauty/fashion preference and the amount of
+videos watched?
+
+```{r}
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "cor_beauty_video.png"))
+```
+
+No, there is no clear trend visible.
+
+### Need for interaction, top 100 of each preference
+
+Compare the top 100 pref_Gaming users against the top 100 pref_BeautyFashion
+users, based on their need for interaction.
+
+```{r}
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "beautyvsgaming.png"))
+```
+
+```{r}
+# also visualise grade of preference to see if there is a connection
+top_beauty2 <- platform_users_clean %>%
+  arrange(desc(pref_BeautyFashion)) %>%
+  slice(1:100) %>%
+  mutate(group = "Top Beauty/Fashion2",
+         preference_score = pref_BeautyFashion)
+
+top_gaming2 <- platform_users_clean %>%
+  arrange(desc(pref_Gaming)) %>%
+  slice(1:100) %>%
+  mutate(group = "Top Gaming2",
+         preference_score = pref_Gaming)
+
+top_users2 <- bind_rows(top_beauty2, top_gaming2)
+
+ggplot(top_users2, aes(x = need_interaction, y = preference_score, color = group)) +
+  geom_point(size = 3, alpha = 0.6) +
+  scale_color_manual(
+    values = c("Top Beauty/Fashion2" = "#FF69B4", "Top Gaming2" = "#4169E1")
+  ) +
+  labs(
+    title = "Need for Interaction vs. Preference Score\nTop 100 Beauty/Fashion vs Top 100 Gaming Users",
+    x = "Need for Interaction Score",
+    y = "Group-specific Preference Score",
+    color = "Group"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 15),
+    legend.position = "bottom",
+    panel.grid.major.y = element_line(color = "gray90")
+  )
+```
+
+No connection between need for interaction and how strong the preference is.
