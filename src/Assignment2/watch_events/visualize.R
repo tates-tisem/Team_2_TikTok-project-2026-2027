@@ -9,7 +9,7 @@ if (!dir.exists("plots")) {
   dir.create("plots")
 }
 
-d <- read.csv("../../Data/clean/watch_events_clean.csv")
+d <- read.csv("../../../Data/clean/watch_events_clean.csv")
 
 
 # plot 1: spread of actions

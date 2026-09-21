@@ -5,11 +5,11 @@ library(dplyr)
 library(lubridate)
 
 # create the clean data folder if it does not exist yet
-if (!dir.exists("../../Data/clean")) {
-  dir.create("../../Data/clean", recursive = TRUE)
+if (!dir.exists("../../../Data/clean")) {
+  dir.create("../../../Data/clean", recursive = TRUE)
 }
 
-d <- read.csv("../../Data/raw/watch_events.csv")
+d <- read.csv("../../../Data/raw/watch_events.csv")
 
 
 # inspect the raw data
@@ -60,4 +60,4 @@ print(sum(is.na(d$watch_seconds)))
 print(sum(is.na(d$video_length_sec)))
 
 # 5. saving to clean folder
-write.csv(d, "../../Data/clean/watch_events_clean.csv", row.names = FALSE)
+write.csv(d, "../../../Data/clean/watch_events_clean.csv", row.names = FALSE)
