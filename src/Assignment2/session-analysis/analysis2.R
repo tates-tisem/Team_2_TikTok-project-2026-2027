@@ -6,11 +6,11 @@ if (!dir.exists("../../gen/figures")) dir.create("../../gen/figures", recursive 
 
 # download the data 
 url <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/sessions.csv"
-if (!file.exists("../../data/sessions.csv")) {
-  download.file(url, destfile = "../../data/sessions.csv", mode = "wb")
+if (!file.exists("../../../Data/sessions.csv")) {
+  download.file(url, destfile = "../../../Data/sessions.csv", mode = "wb")
 }
 
-sessions <- read_csv("../../data/sessions.csv")
+sessions <- read_csv("../../../Data/sessions.csv")
 
 # Session duration vs videos viewed
 duration_videos_plot <- ggplot(
@@ -20,7 +20,7 @@ duration_videos_plot <- ggplot(
   geom_point()
 
 ggsave(
-  "../../gen/figures/duration_vs_videos.png",
+  "../../../gen/figures/duration_vs_videos.png",
   duration_videos_plot
 )
 
@@ -40,11 +40,11 @@ videos_watch_plot <- ggplot(
   labs(title = "Videos Viewed vs Watch Time", x = "videos_viewed", y = "watch_seconds")
 
 ggsave(
-  "../../gen/figures/videos_vs_watch.png",
+  "../../../gen/figures/videos_vs_watch.png",
   videos_watch_plot
 )
 
 ggsave(
-  "../../gen/figures/duration_vs_watch.png",
+  "../../../gen/figures/duration_vs_watch.png",
   duration_watch_plot
 )
