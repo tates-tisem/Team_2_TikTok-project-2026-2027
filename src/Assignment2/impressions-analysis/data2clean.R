@@ -1,11 +1,15 @@
 library(tidyverse)
+library(here)
 
-# check if raw data exists
-if (!file.exists("data/data_impressions.csv")) {
-  download.file(url, "data/data_impressions.csv")}
+# download the raw data if it does not exist yet
+url <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/impressions.csv"
+data_file <- here("Data", "data_impressions.csv")
+if (!file.exists(data_file)) {
+  download.file(url, data_file, mode = "wb")
+}
 
 # inspect data
-data_impressions <- read_csv("data/data_impressions.csv")
+data_impressions <- read_csv(data_file)
 print(sum(is.na(data_impressions$score_total)))
 print(colSums(is.na(data_impressions)))
 print(sum(duplicated(data_impressions$impression_id)))
@@ -29,4 +33,4 @@ source_summary <- data_clean %>%
   arrange(desc(n))
 print(source_summary)
 
-write.csv(data_clean, file.path("Data", "cleaned_data_impressions.csv"), row.names = FALSE)
+write.csv(data_clean, here("Data", "cleaned_data_impressions.csv"), row.names = FALSE)

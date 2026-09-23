@@ -67,6 +67,22 @@ The methods used are described in 3. and 4.
     - Short videos have a higer watchtime, thus people finish watching shorter videos more often
     - Longer videos still have an audience, but people drop out before the end. 
 
+## Data source
+
+All data is stored directly in the `Data` folder (no subfolders).
+
+`src/download_database.R` downloads the SQLite database `Data/tiktok_students.sqlite`.
+`src/compare_csv_sqlite.R` compares the old CSV files with the database tables.
+
+| Data         | Source          | Reason |
+|--------------|-----------------|--------|
+| video_view   | SQLite database | All columns present |
+| sessions     | CSV             | No sessions table in the database (can be rebuilt from `watch_logs`) |
+| users        | CSV             | `pref_*`, `satiation_decay`, `need_interaction` missing in database |
+| impressions  | CSV             | `score_total`, `feed_rank` missing in database |
+| watch_events | CSV             | `action`, `started_at_raw`, `ended_at` missing in database |
+
+Note: the database is a larger dataset than the old CSVs (e.g. 50,000 instead of 15,000 videos), so results in `summary.qmd` changed.
 
 ## 5. List the group members and their contributions
 

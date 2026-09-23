@@ -6,6 +6,6 @@ $(OUTPUTS): analysis.R
 	Rscript analysis.R
 
 clean:
-	rm -rf visuals ../../../Data/DataA2/cleaned_platform_users.csv
+	rm -rf visuals ../../../Data/cleaned_platform_users.csv
 
 .PHONY: all clean

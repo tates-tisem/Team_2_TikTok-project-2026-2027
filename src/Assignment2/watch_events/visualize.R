@@ -2,14 +2,18 @@
 
 library(dplyr)
 library(ggplot2)
+library(here)
 Sys.setlocale("LC_TIME", "C")
 
+# folder where the plots are saved
+plots_dir <- here("src", "Assignment2", "watch_events", "plots")
+
 # create the plots folder if it does not exist yet
-if (!dir.exists("plots")) {
-  dir.create("plots")
+if (!dir.exists(plots_dir)) {
+  dir.create(plots_dir, recursive = TRUE)
 }
 
-d <- read.csv("../../../Data/clean/watch_events_clean.csv")
+d <- read.csv(here("Data", "watch_events_clean.csv"))
 
 
 # plot 1: spread of actions
@@ -19,7 +23,7 @@ p1 <- ggplot(d, aes(x = action)) +
        x = "Action",
        y = "Number of events")
 
-ggsave("plots/actions.png", p1, width = 7, height = 5)
+ggsave(file.path(plots_dir, "actions.png"), p1, width = 7, height = 5)
 
 
 # plot 2:  
@@ -34,7 +38,7 @@ p2 <- ggplot(d_sample, aes(x = video_length_sec, y = watch_seconds, colour = act
        y = "Watched (seconds)",
        colour = "Action")
 
-ggsave("plots/watch_time_vs_length.png", p2, width = 7, height = 5)
+ggsave(file.path(plots_dir, "watch_time_vs_length.png"), p2, width = 7, height = 5)
 
 
 # plot 3: events per day
@@ -47,4 +51,4 @@ p3 <- ggplot(d, aes(x = day)) +
        x = "Date",
        y = "Number of events")
 
-ggsave("plots/events_per_day.png", p3, width = 7, height = 5)
+ggsave(file.path(plots_dir, "events_per_day.png"), p3, width = 7, height = 5)

@@ -1,8 +1,12 @@
 .PHONY: all clean
 
 # default target: build everything
-all: Data/data_impressions.csv Data/cleaned_data_impressions.csv src/Assignment2/impressions-analysis/png/score_graph.png src/Assignment2/impressions-analysis/png/source_plot.png
+all: Data/tiktok_students.sqlite Data/data_impressions.csv Data/cleaned_data_impressions.csv src/Assignment2/impressions-analysis/png/score_graph.png src/Assignment2/impressions-analysis/png/source_plot.png
 
+# download the SQLite database
+Data/tiktok_students.sqlite: src/download_database.R
+	Rscript src/download_database.R
+	
 # download raw data
 Data/data_impressions.csv: src/Assignment2/impressions-analysis/data2.R
 	Rscript src/Assignment2/impressions-analysis/data2.R
