@@ -1,9 +1,11 @@
 library(tidyverse)
+library(here)
 
-data_clean <- read_csv("data/cleaned_data_impressions.csv")
+data_clean <- read_csv(here("Data", "cleaned_data_impressions.csv"))
 
-# dir.create("png", showWarnings = FALSE) -> downloads to working directory instead of clear path
-dir.create(file.path("src", "Assignment2", "impressions-analysis", "png"), showWarnings = FALSE, recursive = TRUE)
+# folder where the plots are saved
+png_dir <- here("src", "Assignment2", "impressions-analysis", "png")
+dir.create(png_dir, showWarnings = FALSE, recursive = TRUE)
 
 score_graph <- ggplot(data_clean, aes(x = score_total, y = feed_rank, color = source_bucket)) + 
   geom_point(alpha = 0.7, size = 2) +
@@ -16,7 +18,7 @@ score_graph <- ggplot(data_clean, aes(x = score_total, y = feed_rank, color = so
   theme_minimal()
 
 ggsave(
-  filename = file.path("src", "Assignment2", "impressions-analysis", "png", "score_graph.png"),
+  filename = file.path(png_dir, "score_graph.png"),
   plot = score_graph,
   width = 7, height = 4, dpi = 300)
 
@@ -39,6 +41,6 @@ source_plot <- ggplot(source_summary, aes(x = reorder(source_bucket, -n), y = pe
   theme(legend.position = "none")
 
 ggsave(
-  filename = file.path("src", "Assignment2", "impressions-analysis", "png", "source_plot.png"),
+  filename = file.path(png_dir, "source_plot.png"),
   plot = source_plot,
   width = 7, height = 4, dpi = 300)

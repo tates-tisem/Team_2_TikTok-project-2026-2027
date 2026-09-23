@@ -13,8 +13,8 @@ library(tidyverse)
 library(here)
 library(knitr)
 
-platform_users <- read.csv(here("Data", "DataA2", "platform_users.csv"))
-platform_users_clean <- read.csv(here("Data", "DataA2", "cleaned_platform_users.csv"))
+platform_users <- read.csv(here("Data", "platform_users.csv"))
+platform_users_clean <- read.csv(here("Data", "cleaned_platform_users.csv"))
 ```
 
 ## How the traits are distributed

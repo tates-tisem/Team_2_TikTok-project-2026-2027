@@ -10,7 +10,7 @@ library(viridis)
 # ---------------------------------------------------------------- data ----
 
 data_url_2 <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/users.csv"
-data_dir <- here("Data", "DataA2")
+data_dir <- here("Data")
 data_file <- file.path(data_dir, "platform_users.csv")
 clean_file <- file.path(data_dir, "cleaned_platform_users.csv")
 
