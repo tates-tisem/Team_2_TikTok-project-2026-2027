@@ -1,0 +1,245 @@
+---
+title: "TikTok Project Final Report"
+format:
+  pdf:
+    toc: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(DBI)
+library(RSQLite)
+library(knitr)
+```
+
+# Introduction
+
+This report combines the main results from the previous assignments.
+We first give a short overview of the data, then summarize the main
+descriptive analyses, and finally present the regression analysis.
+
+# Data Overview
+
+The project uses TikTok-related data from both a SQLite database and
+several CSV files. Across the assignments, we worked with information
+on videos, impressions, sessions, users, and watch events.
+
+## Video overview
+
+```{r}
+con <- dbConnect(SQLite(), here("Data", "tiktok_students.sqlite"))
+videos <- dbReadTable(con, "video_view")
+dbDisconnect(con)
+
+overview <- videos %>%
+  summarise(
+    n_videos = n(),
+    n_creators = n_distinct(creator_id),
+    avg_length = mean(video_length_sec, na.rm = TRUE),
+    avg_watch_rate = mean(watch_rate, na.rm = TRUE)
+  )
+
+overview
+```
+
+## Short vs long videos
+
+```{r}
+length_groups <- videos %>%
+  mutate(length_group = ifelse(video_length_sec < 30, "short", "long")) %>%
+  group_by(length_group) %>%
+  summarise(
+    videos_n = n(),
+    watch_rate_avg = mean(watch_rate, na.rm = TRUE),
+    watch_share_avg = mean(avg_watch_share, na.rm = TRUE)
+  )
+
+length_groups
+```
+
+Short and long videos had very similar average watch rate and watch share.
+So based on this descriptive comparison, video length alone does not seem
+to make a clear difference in audience retention.
+
+# Descriptive Analyses
+
+## Impressions
+
+The impressions dataset originally contained 95,737 rows. We found 786
+fully duplicated rows and removed them, leaving 94,951 rows. The
+`mission_ids` variable also had 13,926 missing values.
+
+After removing the exact duplicates, 161 repeated `impression_id`
+values were still present. These were kept because the other variables
+differed, meaning they likely represented separate impressions rather
+than data errors.
+
+Most impressions came from the `preferred_new` feed (51.6%), followed
+by `explore` (31.4%) and `known` (17.0%).
+
+## Session analysis
+
+We also explored how users behave within sessions. This part of the
+analysis looked at session duration, the number of videos viewed,
+watch time, and how sessions changed over time.
+
+```{r}
+source(here("src", "Assignment2", "session-analysis", "analysis.R"))
+source(here("src", "Assignment2", "session-analysis", "analysis2.R"))
+```
+
+```{r}
+#| fig-cap: "Relationship between session duration and watch time"
+include_graphics(here("gen", "figures", "duration_vs_watch.png"))
+```
+
+The session analysis was mainly exploratory. It gave a general picture
+of how long sessions last, how many videos users watch in one session,
+and how watch time relates to session behaviour.
+
+## User analysis
+
+The users dataset was cleaned by removing rows with missing values and
+duplicate observations.
+
+```{r}
+source(here("src", "Assignment2", "users_analysis", "analysis.R"))
+```
+
+```{r}
+#| fig-cap: "Beauty/Fashion preference and mean videos watched"
+include_graphics(here("src", "Assignment2", "users_analysis", "visuals", "cor_beauty_video.png"))
+```
+
+We compared users with different preferences, especially Beauty/Fashion
+and Gaming. We also looked at differences in satiation decay, need for
+interaction, and the relationship between Beauty/Fashion preference and
+the average number of videos watched.
+
+## Watch events
+
+The watch events analysis focused on user actions, the relationship
+between video length and watch time, and the number of watch events
+over time.
+
+```{r}
+#| include: false
+
+source(here("src", "Assignment2", "watch_events", "download_data.R"))
+source(here("src", "Assignment2", "watch_events", "clean_data.R"))
+source(here("src", "Assignment2", "watch_events", "visualize.R"))
+```
+
+```{r}
+#| fig-cap: "Watch time against video length"
+include_graphics(here("src", "Assignment2", "watch_events", "plots", "watch_time_vs_length.png"))
+```
+
+This part of the analysis gives a descriptive view of how users react
+to videos and how watch time changes with video length.
+
+# Regression Analysis
+
+The final part of the project studies whether having seen a creator
+before is related to watch time.
+
+```{r}
+source(here("src", "Assignment3", "regression_sql.R"))
+```
+
+The regression uses data from `watch_logs` and `video_view`. Two main
+variables are created: `seen_before`, which indicates whether a user
+has already seen the same creator, and `long_video`, which indicates
+whether a video is longer than the median video length.
+
+We estimated four models:
+- Model 1: watch time explained by prior creator exposure
+- Model 2: adds video length
+- Model 3: includes the interaction between prior exposure and video length
+- Model 4: repeats the interaction model using log-transformed watch time
+
+## Model output
+
+```{r}
+coef(summary(m1))
+```
+
+```{r}
+coef(summary(m2))
+```
+
+```{r}
+coef(summary(m3))
+```
+
+```{r}
+coef(summary(m4))
+```
+
+## Regression figures
+
+```{r}
+#| fig-cap: "Average watch time by prior exposure to a creator"
+include_graphics(here("gen", "regression_figures", "exposure_plot.png"))
+```
+
+```{r}
+#| fig-cap: "Average watch time for short and long videos"
+include_graphics(here("gen", "regression_figures", "video_length_plot.png"))
+```
+
+```{r}
+#| fig-cap: "Interaction between prior exposure and video length"
+include_graphics(here("gen", "regression_figures", "interaction_plot.png"))
+```
+
+## Regression Results
+
+In Model 1, `seen_before` has a negative coefficient of -0.305. This means
+that users watched about 0.3 seconds less, on average, when they had seen
+the same creator before. The effect is statistically significant, although
+it is very small.
+
+After adding video length in Model 2, the coefficient for `seen_before`
+remains negative (-0.315). Long videos are associated with about 5.73
+seconds more watch time than short videos.
+
+Model 3 includes an interaction between prior exposure and video length.
+The interaction coefficient is negative (-0.111) and statistically
+significant. This suggests that the negative relationship between prior
+creator exposure and watch time is slightly stronger for long videos.
+
+However, in Model 4, where watch time is log-transformed, the interaction
+term is no longer significant (p = 0.703). This means that the interaction
+effect is not very robust across model specifications.
+
+# Conclusion
+
+The descriptive analyses showed several patterns in TikTok viewing
+behaviour across videos, impressions, sessions, users, and watch events.
+
+The regression analysis showed that previous exposure to the same creator
+was associated with slightly lower watch time, while longer videos were
+associated with higher watch time. The interaction between these two
+variables was statistically significant in the model using raw watch time,
+but not in the log-transformed model.
+
+The size of the prior-exposure effect was small, and the models explained
+only a limited part of the variation in watch time. The results therefore
+show associations in this dataset rather than strong evidence of a causal
+relationship.
+
+# Limitations
+
+This project has a few limitations. Some datasets needed cleaning, and
+some variables contained missing values or duplicate records. Also, not
+all potentially important factors are observed in the data.
+
+Because of this, the results should be understood as a structured
+analysis of the available data rather than a complete explanation of
+user behaviour.
