@@ -6,3 +6,6 @@ gen/regression_figures/
 *.sqlite
 .Rproj.user
 .Rhistory
+
+*.html
+*_files/
