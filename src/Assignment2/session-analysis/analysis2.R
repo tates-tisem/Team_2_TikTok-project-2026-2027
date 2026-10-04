@@ -13,6 +13,8 @@ if (!file.exists(data_file)) {
 
 sessions <- read_csv(data_file)
 
+write.csv(sessions, here("Data", "sessions.csv"), row.names = FALSE)
+
 # Session duration vs videos viewed
 duration_videos_plot <- ggplot(
   data = sessions,
