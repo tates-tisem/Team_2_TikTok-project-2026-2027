@@ -1,6 +1,7 @@
 # git bash and powershell had some issues with "render quarto", these do run in powershell
 # I made multiple versions for clean for powershell of command promt but i couldn't get it to work. 
 # So git bash: whole file except quarto render lines; powershell/ command promt: everything except clean target.
+# PULL REQUEST COMMIT 
 
 .PHONY: all clean
 
