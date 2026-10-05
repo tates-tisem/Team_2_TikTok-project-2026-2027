@@ -2,7 +2,7 @@ library(tidyverse)
 library(here)
 
 # create the figures folder
-dir.create(here("gen", "figures"), recursive = TRUE, showWarnings = FALSE)
+dir.create(here("src", "Assignment2", "session-analysis", "figures"), recursive = TRUE, showWarnings = FALSE)
 
 # download the data
 url <- "https://raw.githubusercontent.com/hannesdatta/course-dprep/refs/heads/main/material/project/coaching_2_data/sessions.csv"
@@ -23,7 +23,7 @@ duration_videos_plot <- ggplot(
   geom_point()
 
 ggsave(
-  here("gen", "figures", "duration_vs_videos.png"),
+  here("src", "Assignment2", "session-analysis", "figures", "duration_vs_videos.png"),
   duration_videos_plot
 )
 
@@ -43,11 +43,11 @@ videos_watch_plot <- ggplot(
   labs(title = "Videos Viewed vs Watch Time", x = "videos_viewed", y = "watch_seconds")
 
 ggsave(
-  here("gen", "figures", "videos_vs_watch.png"),
+  here("src", "Assignment2", "session-analysis", "figures", "videos_vs_watch.png"),
   videos_watch_plot
 )
 
 ggsave(
-  here("gen", "figures", "duration_vs_watch.png"),
+  here("src", "Assignment2", "session-analysis", "figures", "duration_vs_watch.png"),
   duration_watch_plot
 )
