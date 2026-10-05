@@ -97,7 +97,7 @@ source(here("src", "Assignment2", "session-analysis", "analysis2.R"))
 
 ```{r}
 #| fig-cap: "Relationship between session duration and watch time"
-include_graphics(here("gen", "figures", "duration_vs_watch.png"))
+include_graphics(here("src", "Assignment2", "session-analysis", "figures", "duration_vs_watch.png"))
 ```
 
 The session analysis was mainly exploratory. It gave a general picture
