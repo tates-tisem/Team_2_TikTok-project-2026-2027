@@ -1,61 +1,40 @@
-.PHONY: all clean
-
-# default target: build everything
-all: Data/tiktok_students.sqlite Data/data_impressions.csv Data/cleaned_data_impressions.csv src/Assignment2/impressions-analysis/png/score_graph.png src/Assignment2/impressions-analysis/png/source_plot.png
-
-# download the SQLite database
-Data/tiktok_students.sqlite: src/download_database.R
-	Rscript src/download_database.R
-	
-# download raw data
-Data/data_impressions.csv: src/Assignment2/impressions-analysis/data2.R
-	Rscript src/Assignment2/impressions-analysis/data2.R
-
-# download cleaned data
-Data/cleaned_data_impressions.csv: src/Assignment2/impressions-analysis/data2clean.R
-	Rscript src/Assignment2/impressions-analysis/data2clean.R
-
-# visualize the data (plots)
-src/Assignment2/impressions-analysis/png/score_graph.png: src/Assignment2/impressions-analysis/build.plot.R Data/cleaned_data_impressions.csv
-	Rscript src/Assignment2/impressions-analysis/build.plot.R
-
-src/Assignment2/impressions-analysis/png/source_plot.png: src/Assignment2/impressions-analysis/build.plot.R Data/cleaned_data_impressions.csv
-	Rscript src/Assignment2/impressions-analysis/build.plot.R
-
-# clean up output files
-
-clean:
-	-del Data\data_impressions.csv
-	-del Data\cleaned_data_impressions.csv
-	-del src\Assignment2\impressions-analysis\png\score_graph.png
-	-del src\Assignment2\impressions-analysis\png\source_plot.png
-
-# this one does not work on Windows :(
-# clean: 
-#	rm -f Data/data_impressions.csv
-#	rm -f Data/cleaned_data_impressions.csv
-#	rm -f src/Assignment2/impressions-analysis/png/score_graph.png
-#	rm -f src/Assignment2/impressions-analysis/png/source_plot.png
-
-
-# Goal
-# Make the whole project reproducible from a single command. Create one Makefile in the root of the repository that, when run, downloads the data, cleans it if necessary, runs the different summaries, runs the regression analysis, and combines all the outputs into the final PDF (or, if you want to take it further, into a dashboard).
-
-# Tasks
-
-# Create a single Makefile at the root of the repository that orchestrates the full pipeline end to end.
-
-# Use proper Makefile targets and dependencies, so a step only reruns when its inputs have changed (not on every make call).
-
-# (Optional, more advanced) In addition to a static PDF, turn the final output into an interactive dashboard (e.g. a Quarto dashboard or Shiny app) as the last step of the pipeline.
-
-# Completion
-
-# When everything runs correctly, create a Pull request on GitHub from your branch to your main branch (not to the main repository) and merge to main.
+# git bash and powershell had some issues with "render quarto", these do run in powershell
+# I made multiple versions for clean for powershell of command promt but i couldn't get it to work. 
+# So git bash: whole file except quarto render lines; powershell/ command promt: everything except clean target.
 
 .PHONY: all clean
-# default target: build everything
-all: Data/tiktok_students.sqlite Data/data_impressions.csv Data/cleaned_data_impressions.csv src/Assignment2/impressions-analysis/png/score_graph.png src/Assignment2/impressions-analysis/png/source_plot.png
+
+# target: build everything
+all: Data/tiktok_students.sqlite \
+src/Assignment1/summary.html \
+Data/data_impressions.csv \
+Data/cleaned_data_impressions.csv \
+src/Assignment2/impressions-analysis/png/score_graph.png \
+src/Assignment2/impressions-analysis/png/source_plot.png \
+Data/sessions.csv \
+src/Assignment2/session-analysis/figures/duration_vs_videos.png \
+src/Assignment2/session-analysis/figures/duration_vs_watch.png \
+src/Assignment2/session-analysis/figures/videos_vs_watch.png \
+src/Assignment2/session-analysis/figures/session_duration.png \
+src/Assignment2/session-analysis/figures/videos_viewed.png \
+src/Assignment2/session-analysis/figures/sessions_per_user.png \
+src/Assignment2/session-analysis/figures/daily_sessions.png \
+Data/platform_users.csv \
+Data/cleaned_platform_users.csv \
+src/Assignment2/users_analysis/visuals/beautyvsgaming.png \
+src/Assignment2/users_analysis/visuals/cor_beauty_video.png \
+src/Assignment2/users_analysis/visuals/missing_comparison.png \
+src/Assignment2/users_analysis/visuals/satiation_pref.png \
+Data/watch_events.csv \
+Data/watch_events_clean.csv \
+src/Assignment2/watch_events/plots/actions.png \
+src/Assignment2/watch_events/plots/events_per_day.png \
+src/Assignment2/watch_events/plots/watch_time_vs_length.png \
+gen/regression_figures/exposure_plot.png \
+gen/regression_figures/interaction_plot.png \
+gen/regression_figures/regression_summary.txt \
+gen/regression_figures/video_length_plot.png \
+src/Assignment3/final_report.pdf
 
 # download the SQLite database
 Data/tiktok_students.sqlite: src/download_database.R
@@ -64,7 +43,8 @@ Data/tiktok_students.sqlite: src/download_database.R
 ##########################################################################################################################################################
 ##########################################################################################################################################################
 
-# ASSIGNMENT 1
+# ASSIGNMENT 1 
+# this one only runs with powershell not with git bash 
 src/Assignment1/summary.html: src/Assignment1/summary.qmd Data/tiktok_students.sqlite
 	quarto render src/Assignment1/summary.qmd --to html
 
@@ -93,12 +73,14 @@ src/Assignment2/impressions-analysis/png/score_graph.png src/Assignment2/impress
 
 ##########################################################################################################################################################
 # session-analysis
-src/Assignment2/session-analysis/figures/duration_vs_videos.png \ src/Assignment2/session-analysis/figures/duration_vs_watch.png \ src/Assignment2/session-analysis/figures/videos_vs_watch.png: \
+Data/sessions.csv: src/Assignment2/session-analysis/analysis.R
+	Rscript src/Assignment2/session-analysis/analysis.R
+
+src/Assignment2/session-analysis/figures/duration_vs_videos.png src/Assignment2/session-analysis/figures/duration_vs_watch.png src/Assignment2/session-analysis/figures/videos_vs_watch.png: \
 	src/Assignment2/session-analysis/analysis2.R 
 	Rscript src/Assignment2/session-analysis/analysis2.R
-
 	
-src/Assignment2/session-analysis/figures/session_duration.png \ src/Assignment2/session-analysis/figures/videos_viewed.png \ src/Assignment2/session-analysis/figures/sessions_per_user.png \ src/Assignment2/session-analysis/figures/daily_sessions.png: \
+src/Assignment2/session-analysis/figures/session_duration.png src/Assignment2/session-analysis/figures/videos_viewed.png src/Assignment2/session-analysis/figures/sessions_per_user.png src/Assignment2/session-analysis/figures/daily_sessions.png: \
 	src/Assignment2/session-analysis/analysis.R 
 	Rscript src/Assignment2/session-analysis/analysis.R
 
@@ -106,16 +88,16 @@ src/Assignment2/session-analysis/figures/session_duration.png \ src/Assignment2/
 # user_analysis
 
 # download raw data
-Data/platforum_users.csv: src/Assignment2/user_analysis/DataA2.qmd
-	quarto render src/Assignment2/user_analysis/DataA2.qmd
+Data/platform_users.csv: src/Assignment2/users_analysis/analysis.R
+	Rscript src/Assignment2/users_analysis/analysis.R
 
 # download cleaned data
-Data/cleaned_platforum_users.csv: src/Assignment2/user_analysis/DataA2.qmd
-	quarto render src/Assignment2/user_analysis/DataA2.qmd
+Data/cleaned_platform_users.csv: src/Assignment2/users_analysis/analysis.R
+	Rscript src/Assignment2/users_analysis/analysis.R
 
-src/Assignment2/user_analysis/visuals/beautyvsgaming.png \ src/Assignment2/user_analysis/visuals/cor_beauty_video.png \ src/Assignment2/user_analysis/visuals/missing_comparison.png \ src/Assignment2/user_analysis/visuals/satiation_pref.png: \
-	src/Assignment2/user_analysis/analysis.R Data/cleaned_platform_users.csv
-	Rscript src/Assignment2/user_analysis/analysis.R
+src/Assignment2/users_analysis/visuals/beautyvsgaming.png src/Assignment2/users_analysis/visuals/cor_beauty_video.png src/Assignment2/users_analysis/visuals/missing_comparison.png src/Assignment2/users_analysis/visuals/satiation_pref.png: \
+	src/Assignment2/users_analysis/analysis.R Data/cleaned_platform_users.csv
+	Rscript src/Assignment2/users_analysis/analysis.R
 
 ##########################################################################################################################################################
 # watch_events
@@ -137,3 +119,121 @@ src/Assignment2/watch_events/plots/actions.png src/Assignment2/watch_events/plot
 
 # ASSIGNMENT 4 (FOLDER ASSIGNMENT 3)
 
+# regression
+gen/regression_figures/exposure_plot.png gen/regression_figures/interaction_plot.png gen/regression_figures/regression_summary.txt gen/regression_figures/video_length_plot.png: \
+	src/Assignment3/regression_sql.R Data/tiktok_students.sqlite
+	Rscript src/Assignment3/regression_sql.R
+
+# final analysis (to turn qmd into pdf, the library tinytex needs to be installed, I put the line for that in the final_report.qmd file)
+src/Assignment3/final_report.pdf: src/Assignment3/final_report.qmd Data/tiktok_students.sqlite
+	quarto render src/Assignment3/final_report.qmd --to pdf
+
+##########################################################################################################################################################
+##########################################################################################################################################################
+
+# this works in git bash not in command prompt or powershell
+clean:
+	rm -f Data/tiktok_students.sqlite \
+src/Assignment1/summary.html \
+Data/data_impressions.csv \
+Data/cleaned_data_impressions.csv \
+src/Assignment2/impressions-analysis/png/score_graph.png \
+src/Assignment2/impressions-analysis/png/source_plot.png \
+Data/sessions.csv \
+src/Assignment2/session-analysis/figures/duration_vs_videos.png \
+src/Assignment2/session-analysis/figures/duration_vs_watch.png \
+src/Assignment2/session-analysis/figures/videos_vs_watch.png \
+src/Assignment2/session-analysis/figures/session_duration.png \
+src/Assignment2/session-analysis/figures/videos_viewed.png \
+src/Assignment2/session-analysis/figures/sessions_per_user.png \
+src/Assignment2/session-analysis/figures/daily_sessions.png \
+Data/platform_users.csv \
+Data/cleaned_platform_users.csv \
+src/Assignment2/users_analysis/visuals/beautyvsgaming.png \
+src/Assignment2/users_analysis/visuals/cor_beauty_video.png \
+src/Assignment2/users_analysis/visuals/missing_comparison.png \
+src/Assignment2/users_analysis/visuals/satiation_pref.png \
+Data/watch_events.csv \
+Data/watch_events_clean.csv \
+src/Assignment2/watch_events/plots/actions.png \
+src/Assignment2/watch_events/plots/events_per_day.png \
+src/Assignment2/watch_events/plots/watch_time_vs_length.png \
+gen/regression_figures/exposure_plot.png \
+gen/regression_figures/interaction_plot.png \
+gen/regression_figures/regression_summary.txt \
+gen/regression_figures/video_length_plot.png \
+src/Assignment3/final_report.pdf
+	
+
+#SHELL := C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe
+#.SHELLFLAGS := -NoProfile -Command
+#.PHONY: all clean
+
+#clean:
+#	$$files = @(
+#		'Data/tiktok_students.sqlite',
+#		'src/Assignment1/summary.html',
+#		'Data/data_impressions.csv',
+#		'Data/cleaned_data_impressions.csv',
+#		'src/Assignment2/impressions-analysis/png/score_graph.png',
+#		'src/Assignment2/impressions-analysis/png/source_plot.png',
+#		'Data/sessions.csv',
+#		'src/Assignment2/session-analysis/figures/duration_vs_videos.png',
+#		'src/Assignment2/session-analysis/figures/duration_vs_watch.png',
+#		'src/Assignment2/session-analysis/figures/videos_vs_watch.png',
+#		'src/Assignment2/session-analysis/figures/session_duration.png',
+#		'src/Assignment2/session-analysis/figures/videos_viewed.png',
+#		'src/Assignment2/session-analysis/figures/sessions_per_user.png',
+#		'src/Assignment2/session-analysis/figures/daily_sessions.png',
+#		'Data/platform_users.csv',
+#		'Data/cleaned_platform_users.csv',
+#		'src/Assignment2/users_analysis/visuals/beautyvsgaming.png',
+#		'src/Assignment2/users_analysis/visuals/cor_beauty_video.png',
+#		'src/Assignment2/users_analysis/visuals/missing_comparison.png',
+#		'src/Assignment2/users_analysis/visuals/satiation_pref.png',
+#		'Data/watch_events.csv',
+#		'Data/watch_events_clean.csv',
+#		'src/Assignment2/watch_events/plots/actions.png',
+#		'src/Assignment2/watch_events/plots/events_per_day.png',
+#		'src/Assignment2/watch_events/plots/watch_time_vs_length.png',
+#		'gen/regression_figures/exposure_plot.png',
+#		'gen/regression_figures/interaction_plot.png',
+#		'gen/regression_figures/regression_summary.txt',
+#		'gen/regression_figures/video_length_plot.png',
+#		'src/Assignment3/final_report.pdf'
+#	)
+#	Remove-Item -Force -ErrorAction SilentlyContinue $$files
+
+
+
+# CLEAN This usually works on windows if you use powershell but somehow it is not working this time
+#	del Data/tiktok_students.sqlite
+#	del src/Assignment1/summary.html
+#	del Data/data_impressions.csv
+#	del Data/cleaned_data_impressions.csv
+#	del src/Assignment2/impressions-analysis/png/score_graph.png
+#	del src/Assignment2/impressions-analysis/png/source_plot.png
+#	del Data/sessions.csv
+#	del src/Assignment2/session-analysis/figures/duration_vs_videos.png
+#	del src/Assignment2/session-analysis/figures/duration_vs_watch.png
+#	del src/Assignment2/session-analysis/figures/videos_vs_watch.png
+#	del src/Assignment2/session-analysis/figures/session_duration.png
+#	del src/Assignment2/session-analysis/figures/videos_viewed.png
+#	del src/Assignment2/session-analysis/figures/sessions_per_user.png
+#	del src/Assignment2/session-analysis/figures/daily_sessions.png
+#	del Data/platform_users.csv 
+#	del Data/cleaned_platform_users.csv
+#	del src/Assignment2/users_analysis/visuals/beautyvsgaming.png
+#	del src/Assignment2/users_analysis/visuals/cor_beauty_video.png
+#	del src/Assignment2/users_analysis/visuals/missing_comparison.png
+#	del src/Assignment2/users_analysis/visuals/satiation_pref.png
+#	del Data/watch_events.csv 
+#	del Data/watch_events_clean.csv
+#	del src/Assignment2/watch_events/plots/actions.png
+#	del src/Assignment2/watch_events/plots/events_per_day.png
+#	del src/Assignment2/watch_events/plots/watch_time_vs_length.png
+#	del gen/regression_figures/exposure_plot.png
+#	del gen/regression_figures/interaction_plot.png
+#	del gen/regression_figures/regression_summary.txt
+#	del gen/regression_figures/video_length_plot.png
+#	del src/Assignment3/final_report.pdf
