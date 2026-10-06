@@ -14,7 +14,7 @@ con <- dbConnect(SQLite(), dbname = here("Data", "tiktok_students.sqlite"))
 
 data <- dbGetQuery(con, "
   SELECT w.user_id, w.creator_id, w.watch_seconds, w.impression_at,
-         v.video_length_sec
+         v.video_length_sec, w.was_watched
   FROM watch_logs w
   LEFT JOIN video_view v ON w.video_id = v.video_id
   ORDER BY w.user_id, w.impression_at
@@ -49,8 +49,16 @@ summary(m2)
 summary(m3)
 summary(m4)
 
+# m5: probability that the video is watched
+m5 <- glm(was_watched ~ seen_before * long_video, family = binomial, data = data)
+
+summary(m5)
+odds_ratios <- exp(coef(m5))
+odds_ratios
+
 # 4) Save output -------------------------------------------------------------
 capture.output(summary(m1), summary(m2), summary(m3), summary(m4),
+               summary(m5), odds_ratios,
                file = file.path(out_dir, "regression_summary.txt"))
 
 # 5) Line chart: watch time by exposure number (m1) --------------------------
