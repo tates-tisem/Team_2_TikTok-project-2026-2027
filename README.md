@@ -161,7 +161,14 @@ The Makefile I made runs every target created by each of the past targets. We we
 Git Bash works fine and according to AI it should also run the quarto render lines, it is probably my laptop that makes it difficult. The Powershell versions should technically work too but it is not working, left them in anyways.
 
 ### Melek Zohre Ikikardes
-
+1. Added a script to automate the download of the SQLite database.
+2. Implemented a validation script to compare legacy CSV files against SQLite tables.
+3. Updated the pipeline to load video_view directly from the SQLite database and removed the obsolete CSV download process.
+4. Resolved file paths using here() and ensured all CSV outputs are saved directly to the Data directory.
+5. Added the SQLite dependency to the primary Makefile and corrected relative paths in the sub-Makefiles.
+6. Documented all project data sources in the README file.
+7. Merged Pull Request #20 from tates-tisem/sqlite-import into the main branch.
+   
 ### Suna Bayhan
 1. Wrote the code for regression models in src/Assignment3/regression_sql.R
 2. Created the variables seen_before and long_video
